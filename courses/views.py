@@ -20,7 +20,7 @@ class ManageCourseListView(ListView):
 class OwnerMixin:
     def get_queryset(self):
         qs = super().get_queryset()
-        return qs.filter(owner=self.request.filter)
+        return qs.filter(owner=self.request.user)
 
 
 class OwnerEditMixin:
@@ -33,7 +33,8 @@ class OwnerCourseMixin(OwnerMixin, LoginRequiredMixin, PermissionRequiredMixin):
     model = Course
     # The fields of the model to build the model form of the CreateView and UpdateView views.
     fields = ['subject', 'title', 'slug', 'overview']
-    success_url = reverse_lazy('manage_course_list')# Used by CreateView, UpdateView, and DeleteView to redirect the user after the form is successfully submitted or the object is deleted.
+    # Used by CreateView, UpdateView, and DeleteView to redirect the user after the form is successfully submitted or the object is deleted.
+    success_url = reverse_lazy('manage_course_list')
 
 
 class OwnerCourseEditMixin(OwnerCourseMixin, OwnerEditMixin):
@@ -42,7 +43,7 @@ class OwnerCourseEditMixin(OwnerCourseMixin, OwnerEditMixin):
 
 
 class ManageCourseListView(OwnerCourseMixin, ListView):
-    #Lists the courses created by the user. It inherits from OwnerCourseMixin and ListView.
+    # Lists the courses created by the user. It inherits from OwnerCourseMixin and ListView.
     template_name = 'courses/manage/course/list.html'
     permission_required = 'courses.view_course'
 
